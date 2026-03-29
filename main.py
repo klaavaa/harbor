@@ -3,6 +3,7 @@ import networkx as nx
 from networkx.algorithms import community
 import matplotlib.pyplot as plt
 import pickle
+from tqdm import tqdm
 
 
 
@@ -40,7 +41,7 @@ def get_all_pr_edges(owner, repo, numofprs, token):
         "Authorization": f"Bearer {token}",
         "Accept": "application/vnd.github+json"
     }
-
+    progress_bar = tqdm(numofprs)
     while True:
         url = f"https://api.github.com/repos/{owner}/{repo}/issues"
         params = {
@@ -65,7 +66,7 @@ def get_all_pr_edges(owner, repo, numofprs, token):
                 edge = get_pr_edges(owner, repo, number, token, login)
                 if edge: 
                     pr_edges.append(edge)
-            print("amount of prs got data from: ", len(pr_edges))
+                    progress_bar.update(1)
             if len(pr_edges) >= numofprs:
                 break
 
@@ -75,7 +76,7 @@ def get_all_pr_edges(owner, repo, numofprs, token):
 
         page += 1
         
-
+    progress_bar.close()
     return pr_edges
 
 def get_pr_data(owner, repo, numofprs):
@@ -98,6 +99,7 @@ def graph_data(owner, repo):
         for x in edge:
             if x["from"] == x["to"]: continue
             fixed_edges.append(x)
+
     G = nx.Graph()
     comment_count = {}
     review_count = {}
@@ -133,7 +135,6 @@ def graph_data(owner, repo):
 
     maxWeight = 0
     for key in filtered_weights:
-        print(filtered_weights[key])
         maxWeight = max(filtered_weights[key], maxWeight)
 
     for (f, t) in filtered_weights:
@@ -176,7 +177,7 @@ def graph_data(owner, repo):
 
 def main():
     # load data
-    get_pr_data("psf", "requests", 500)  
+    get_pr_data("webpack", "webpack", 500)  
     # display data
     graph_data("psf", "requests")
     #graph_data("pandas-dev", "pandas")
