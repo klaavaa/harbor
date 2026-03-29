@@ -176,11 +176,10 @@ def graph_data(owner, repo):
 
 
 def main():
-    # load data
-    get_pr_data("webpack", "webpack", 500)  
-    # display data
+    # get data, you can comment this if you already have the data
+    get_pr_data("psf", "requests", 500)
+    # display data, you can comment this if you only want to get the data
     graph_data("psf", "requests")
-    #graph_data("pandas-dev", "pandas")
 
 
 if __name__ == '__main__':
