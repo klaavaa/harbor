@@ -41,7 +41,7 @@ def get_all_pr_edges(owner, repo, numofprs, token):
         "Authorization": f"Bearer {token}",
         "Accept": "application/vnd.github+json"
     }
-    progress_bar = tqdm(numofprs)
+    progress_bar = tqdm(total=numofprs)
     while True:
         url = f"https://api.github.com/repos/{owner}/{repo}/issues"
         params = {
