@@ -13,6 +13,9 @@ def get_pr_edges(owner, repo, pr_number, token, pr_author):
     r_reviews = requests.get(f"https://api.github.com/repos/{owner}/{repo}/pulls/{pr_number}/reviews",
                              headers=headers).json()
     for review in r_reviews:
+        if "user" not in review: continue
+        if "login" not in review["user"]: continue
+
         reviewer = review["user"]["login"]
         edges.append({"from": reviewer, "to": pr_author, "type": "review"})
         if review["state"] == "APPROVED":
@@ -21,6 +24,9 @@ def get_pr_edges(owner, repo, pr_number, token, pr_author):
     r_comments = requests.get(f"https://api.github.com/repos/{owner}/{repo}/issues/{pr_number}/comments",
                               headers=headers).json()
     for comment in r_comments:
+        if "user" not in comment: continue
+        if "login" not in comment["user"]: continue
+    
         commenter = comment["user"]["login"]
         edges.append({"from": commenter, "to": pr_author, "type": "comment"})
 
